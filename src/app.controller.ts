@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
+import { NotificationService } from "./notification.service";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
 
   @Post('public-key-by-hash')
   public getPublicKeyByHash(@Body() body: { hash: string }) {
@@ -54,6 +55,15 @@ export class AppController {
       event: 'code',
       message: body.message,
     }));
+    return { success: true };
+  }
+
+  @Post('register-notification-endpoint')
+  public async registerNotificationEndpoint(@Body() body: { browserHashes: string[]; notificationEndpoint: string; }) {
+    for(const browserHash of body.browserHashes) {
+      console.log(`Registering notification endpoint for ${browserHash}`);
+      await this.notificationService.registerNotificationEndpoint(browserHash, body.notificationEndpoint);
+    }
     return { success: true };
   }
 }

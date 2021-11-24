@@ -2,12 +2,13 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { AppService } from 'src/app.service';
 import { ab2str, str2ab } from 'src/util';
 import { webcrypto } from 'crypto';
+import { NotificationService } from "./notification.service";
 // Typing seems to be missing?
 const { subtle } = webcrypto as any;
 
 @WebSocketGateway()
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
 
   // TODO - include timestamp to stop replay
   @SubscribeMessage('start-linking')
@@ -27,6 +28,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.appService.addClientByHash(client, body.hash);
     console.log(`query code for ${body.hash}...`);
     this.appService.addCodeQueryByHash(body.message, body.hash);
+    await this.notificationService.sendNotification(body.hash, 'TFA request', 'Please check this request');
     return { event: 'query-code-started' };
   }
 
