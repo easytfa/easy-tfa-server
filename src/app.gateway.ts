@@ -25,6 +25,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('query-code')
   public async handleQueryCode(@MessageBody() body: { hash: string; message: string }, @ConnectedSocket() client: any): Promise<any> {
     this.appService.addClientByHash(client, body.hash);
+    console.log(`query code for ${body.hash}...`);
     this.appService.addCodeQueryByHash(body.message, body.hash);
     return { event: 'query-code-started' };
   }

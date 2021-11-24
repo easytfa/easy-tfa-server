@@ -17,23 +17,26 @@ export class AppController {
   }
 
   @Post('link')
-  public link(@Body() body: { hash: string; message: string; }) {
+  public link(@Body() body: { hash: string; message: string; appPublicKey: string; }) {
     const client = this.appService.getClientByHash(body.hash);
     if(client == null) return { success: false };
     client.send(JSON.stringify({
       event: 'link',
       message: body.message,
+      appPublicKey: body.appPublicKey,
     }));
     return { success: true };
   }
 
   @Post('code-queries-by-hashes')
   public async getCodeQueriesByHash(@Body() body: { hashes: string[]; }) {
+    console.log('get code queries', body.hashes);
     let message = null;
     for(const hash of body.hashes) {
       const potentialMessage = await this.appService.getCodeQueryByHash(hash);
       if(potentialMessage != null) {
         message = potentialMessage;
+        console.log('found req');
         break;
       }
     }
@@ -52,6 +55,5 @@ export class AppController {
       message: body.message,
     }));
     return { success: true };
-
   }
 }
