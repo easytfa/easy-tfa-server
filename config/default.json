@@ -1,0 +1,8 @@
+{
+  "PushNotifications": {
+    "Enabled": true,
+    "ApiKey": "AIzaSyAb7SIXV0uv6MipedUvWXfRaHikJaLL1Lw",
+    "ApplicationId": "1:782094081069:android:bfa5a40ed81dfac2912ca4",
+    "ProjectId": "easytfa"
+  }
+}

@@ -1,10 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { NotificationService } from "./notification.service";
+import { NotificationService } from './notification.service';
+import * as config from 'config';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
+
+  @Get('healthcheck')
+  public healthcheck() {
+    return { success: true };
+  }
 
   @Post('public-key-by-hash')
   public getPublicKeyByHash(@Body() body: { hash: string }) {
@@ -12,19 +18,18 @@ export class AppController {
     if(publicKey == null) return { success: false };
     return {
       success: true,
-      // TODO - App has to hash this again to make sure it matches
       publicKey: publicKey,
     };
   }
 
-  @Post('link')
-  public link(@Body() body: { hash: string; message: string; appPublicKey: string; }) {
+  @Post('message')
+  public message(@Body() body: { hash: string; message: string; data: any }) {
     const client = this.appService.getClientByHash(body.hash);
     if(client == null) return { success: false };
     client.send(JSON.stringify({
-      event: 'link',
+      event: 'message',
       message: body.message,
-      appPublicKey: body.appPublicKey,
+      data: body.data,
     }));
     return { success: true };
   }
@@ -47,17 +52,6 @@ export class AppController {
     };
   }
 
-  @Post('send-code')
-  public async sendCode(@Body() body: { hash: string; message: string; }) {
-    const client = this.appService.getClientByHash(body.hash);
-    if(client == null) return { success: false };
-    client.send(JSON.stringify({
-      event: 'code',
-      message: body.message,
-    }));
-    return { success: true };
-  }
-
   @Post('register-notification-endpoint')
   public async registerNotificationEndpoint(@Body() body: { browserHashes: string[]; notificationEndpoint: string; }) {
     for(const browserHash of body.browserHashes) {
@@ -65,5 +59,20 @@ export class AppController {
       await this.notificationService.registerNotificationEndpoint(browserHash, body.notificationEndpoint);
     }
     return { success: true };
+  }
+
+  @Get('config')
+  @Header('Cache-Control', 'public, max-age=3600')
+  public async getConfig() {
+    return {
+      success: true,
+      version: process.env.npm_package_version,
+      push: {
+        supported: config.get<boolean>('PushNotifications.Enabled'),
+        apiKey: config.get<string>('PushNotifications.ApiKey'),
+        applicationId: config.get<string>('PushNotifications.ApplicationId'),
+        projectId: config.get<string>('PushNotifications.ProjectId'),
+      },
+    };
   }
 }
