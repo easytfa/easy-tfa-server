@@ -7,4 +7,4 @@ COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production
 COPY dist .
 COPY config ./config
-CMD ["node", "main.js"]
+CMD ["npm", "run", "start:prod:server"]

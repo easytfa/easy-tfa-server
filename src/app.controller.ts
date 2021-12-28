@@ -62,7 +62,7 @@ export class AppController {
   }
 
   @Get('config')
-  @Header('Cache-Control', 'public, max-age=3600')
+  @Header('Cache-Control', 'public, max-age=7200')
   public async getConfig() {
     return {
       success: true,
