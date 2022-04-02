@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
+import * as config from 'config';
 import * as firebase from 'firebase-admin';
 
 @Injectable()
@@ -10,7 +11,7 @@ export class NotificationService {
   constructor() {
     this.firebaseApp = firebase.initializeApp({
       credential: firebase.credential.cert('./easytfa-firebase-adminsdk.json'),
-      projectId: 'easytfa'
+      projectId: config.get<string>('PushNotifications.ProjectId'),
     });
   }
 
@@ -21,8 +22,9 @@ export class NotificationService {
   public async sendNotification(browserHash: string, title: string, body: string): Promise<void> {
     console.log(`Trying to send notification for ${browserHash}`);
     const recipient = this.notificationEndpointByHash.get(browserHash);
-    if(recipient == null)
+    if(recipient == null) {
       return;
+    }
 
     console.log(`Sending notification to: ${recipient}`);
 
@@ -30,11 +32,11 @@ export class NotificationService {
       token: recipient,
       notification: {
         title,
-        body
+        body,
       },
       android: {
-        priority: 'high'
-      }
-    })
+        priority: 'high',
+      },
+    });
   }
 }

@@ -22,18 +22,6 @@ export class AppController {
     };
   }
 
-  @Post('message')
-  public message(@Body() body: { hash: string; message: string; data: any }) {
-    const client = this.appService.getClientByHash(body.hash);
-    if(client == null) return { success: false };
-    client.send(JSON.stringify({
-      event: 'message',
-      message: body.message,
-      data: body.data,
-    }));
-    return { success: true };
-  }
-
   @Post('code-queries-by-hashes')
   public async getCodeQueriesByHash(@Body() body: { hashes: string[]; }) {
     console.log('get code queries', body.hashes);
@@ -50,6 +38,18 @@ export class AppController {
       success: true,
       message: message,
     };
+  }
+
+  @Post('message')
+  public message(@Body() body: { hash: string; message: string; data: any }) {
+    const client = this.appService.getClientByHash(body.hash);
+    if(client == null) return { success: false };
+    client.send(JSON.stringify({
+      event: 'message',
+      message: body.message,
+      data: body.data,
+    }));
+    return { success: true };
   }
 
   @Post('register-notification-endpoint')
