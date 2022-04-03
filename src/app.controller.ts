@@ -18,31 +18,31 @@ export class AppController {
     if(publicKey == null) return { success: false };
     return {
       success: true,
-      publicKey: publicKey,
+      publicKey: publicKey.publicKey,
+      connectionId: publicKey.connectionId,
     };
   }
 
   @Post('code-queries-by-hashes')
-  public async getCodeQueriesByHash(@Body() body: { hashes: string[]; }) {
-    console.log('get code queries', body.hashes);
+  public getCodeQueriesByHash(@Body() body: { hashes: string[]; }) {
     let message = null;
     for(const hash of body.hashes) {
-      const potentialMessage = await this.appService.getCodeQueryByHash(hash);
+      const potentialMessage = this.appService.getMessageByHash(hash);
       if(potentialMessage != null) {
         message = potentialMessage;
-        console.log('found req');
         break;
       }
     }
     return {
       success: true,
-      message: message,
+      message: message?.message ?? null,
+      connectionId: message?.connectionId ?? null,
     };
   }
 
   @Post('message')
-  public message(@Body() body: { hash: string; message: string; data: any }) {
-    const client = this.appService.getClientByHash(body.hash);
+  public message(@Body() body: { connectionId: string; message: string; data: any }) {
+    const client = this.appService.getClientByUuid(body.connectionId);
     if(client == null) return { success: false };
     client.send(JSON.stringify({
       event: 'message',
@@ -53,17 +53,16 @@ export class AppController {
   }
 
   @Post('register-notification-endpoint')
-  public async registerNotificationEndpoint(@Body() body: { browserHashes: string[]; notificationEndpoint: string; }) {
+  public registerNotificationEndpoint(@Body() body: { browserHashes: string[]; notificationEndpoint: string; }) {
     for(const browserHash of body.browserHashes) {
-      console.log(`Registering notification endpoint for ${browserHash}`);
-      await this.notificationService.registerNotificationEndpoint(browserHash, body.notificationEndpoint);
+      this.notificationService.registerNotificationEndpoint(browserHash, body.notificationEndpoint);
     }
     return { success: true };
   }
 
   @Get('config')
   @Header('Cache-Control', 'public, max-age=7200')
-  public async getConfig() {
+  public getConfig() {
     return {
       success: true,
       version: process.env.npm_package_version,

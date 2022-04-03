@@ -15,18 +15,15 @@ export class NotificationService {
     });
   }
 
-  public async registerNotificationEndpoint(browserHash: string, endpoint: string): Promise<void> {
+  public registerNotificationEndpoint(browserHash: string, endpoint: string): void {
     this.notificationEndpointByHash.set(browserHash, endpoint);
   }
 
   public async sendNotification(browserHash: string, title: string, body: string): Promise<void> {
-    console.log(`Trying to send notification for ${browserHash}`);
     const recipient = this.notificationEndpointByHash.get(browserHash);
     if(recipient == null) {
       return;
     }
-
-    console.log(`Sending notification to: ${recipient}`);
 
     await this.firebaseApp.messaging().send({
       token: recipient,

@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 3000
 
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install --production
+RUN npm ci --production
 COPY dist .
 COPY config ./config
 CMD ["npm", "run", "start:prod:server"]

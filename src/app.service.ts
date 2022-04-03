@@ -2,32 +2,32 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  private clientsByHash = new Map<string, any>();
-  private publicKeyByHash = new Map<string, string>();
-  private codeQueryByHash = new Map<string, string>();
+  private websocketClientsByUuid = new Map<string, any>();
+  private publicKeyByHash = new Map<string, { publicKey: string; connectionId: string }>();
+  private messageByHash = new Map<string, { message: string; connectionId: string }>();
 
-  public addClientByHash(client: any, hash: string) {
-    this.clientsByHash.set(hash, client);
+  public addClientByUuid(client: any, uuid: string) {
+    this.websocketClientsByUuid.set(uuid, client);
   }
 
-  public getClientByHash(hash: string) {
-    return this.clientsByHash.get(hash);
+  public getClientByUuid(uuid: string) {
+    return this.websocketClientsByUuid.get(uuid);
   }
 
-  public addCodeQueryByHash(codeQuery: string, hash: string) {
-    this.codeQueryByHash.set(hash, codeQuery);
+  public addMessageByHash(message: string, hash: string, connectionId: string) {
+    this.messageByHash.set(hash, { message: message, connectionId });
   }
 
-  public getCodeQueryByHash(hash: string) {
-    const ret = this.codeQueryByHash.get(hash);
+  public getMessageByHash(hash: string) {
+    const ret = this.messageByHash.get(hash);
     if(ret != null) {
-      this.codeQueryByHash.delete(hash);
+      this.messageByHash.delete(hash);
     }
     return ret;
   }
 
-  public setPublicKeyByHash(publicKey: string, hash: string) {
-    this.publicKeyByHash.set(hash, publicKey);
+  public setPublicKeyByHash(publicKey: string, hash: string, connectionId: string) {
+    this.publicKeyByHash.set(hash, { publicKey, connectionId });
   }
 
   public getPublicKeyByHash(hash: string) {
