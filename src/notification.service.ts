@@ -33,6 +33,14 @@ export class NotificationService {
       },
       android: {
         priority: 'high',
+        notification: {
+          priority: 'high',
+          title,
+          body,
+          sound: 'default',
+          channelId: 'easytfa_notification_channel',
+          icon: 'ic_aegis_iconx',
+        },
       },
     });
   }

@@ -1,2 +1,2 @@
 npm run build
-docker build --tag easy-tfa-server .
+docker build --tag easytfa/easy-tfa-server .
