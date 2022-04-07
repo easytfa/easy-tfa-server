@@ -8,6 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
 
   @Get('healthcheck')
+  @Header('Cache-Control', 'public, max-age=15')
   public healthcheck() {
     return { success: true };
   }
@@ -61,7 +62,7 @@ export class AppController {
   }
 
   @Get('config')
-  @Header('Cache-Control', 'public, max-age=7200')
+  @Header('Cache-Control', 'public, max-age=86400')
   public getConfig() {
     return {
       success: true,
