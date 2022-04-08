@@ -1,0 +1,11 @@
+{
+  "PushNotifications": {
+    "Enabled": {
+      "__name": "PUSHNOTIFICATIONS_ENABLED",
+      "__format": "boolean"
+    },
+    "ApiKey": "PUSHNOTIFICATIONS_APIKEY",
+    "ApplicationId": "PUSHNOTIFICATIONS_APPLICATIONID",
+    "ProjectId": "PUSHNOTIFICATIONS_PROJECTID"
+  }
+}

@@ -1,4 +1,5 @@
 easytfa-firebase-adminsdk.json
+config/local.json
 
 # compiled output
 /dist

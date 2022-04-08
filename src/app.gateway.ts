@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class AppGateway {
   constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
 
-  // TODO - include timestamp to stop replay
+  // TODO - include timestamp to stop replay (is this really a problem?)
   @SubscribeMessage('start-linking')
   public startLinking(@MessageBody() publicKey: string, @ConnectedSocket() client: any) {
     const hashHex = crypto.createHash('sha256').update(publicKey).digest('hex');
