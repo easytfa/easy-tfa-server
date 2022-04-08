@@ -5,7 +5,17 @@ import * as config from 'config';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {}
+  private readonly version: string;
+
+  constructor(private readonly appService: AppService, private readonly notificationService: NotificationService) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      this.version = require('./package.json').version;
+    } catch {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      this.version = require('../package.json').version;
+    }
+  }
 
   @Get('healthcheck')
   @Header('Cache-Control', 'public, max-age=15')
@@ -66,7 +76,7 @@ export class AppController {
   public getConfig() {
     return {
       success: true,
-      version: process.env.npm_package_version,
+      version: this.version,
       push: {
         supported: config.get<boolean>('PushNotifications.Enabled'),
         apiKey: config.get<string>('PushNotifications.ApiKey'),
