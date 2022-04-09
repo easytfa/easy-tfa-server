@@ -33,7 +33,11 @@ export class NotificationService implements OnModuleDestroy {
     } catch(err) {
       this.logger.log('No existing notification endpoints found in ./data/notification-endpoints.json');
       // Create data directory if it doesn't exist yet
-      fs.mkdirSync('./data', { recursive: true });
+      try {
+        fs.mkdirSync('./data', { recursive: true });
+      } catch {
+        // Best effort - if saving doesn't work, we'll print an error anyway
+      }
     }
 
     // Save notification endpoints every minute
