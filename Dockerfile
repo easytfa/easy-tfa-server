@@ -11,6 +11,8 @@ RUN apk add dumb-init
 USER node
 ENV NODE_ENV=production
 WORKDIR /app
+RUN mkdir data
+VOLUME /app/data
 EXPOSE 80
 
 COPY --chown=node:node ["package.json", "package-lock.json", "./"]

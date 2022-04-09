@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   app.enableCors();
+  app.enableShutdownHooks();
   app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(80, '0.0.0.0');
 }
