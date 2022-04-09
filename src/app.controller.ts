@@ -65,9 +65,7 @@ export class AppController {
 
   @Post('register-notification-endpoint')
   public registerNotificationEndpoint(@Body() body: { browserHashes: string[]; notificationEndpoint: string; }) {
-    for(const browserHash of body.browserHashes) {
-      this.notificationService.registerNotificationEndpoint(browserHash, body.notificationEndpoint);
-    }
+    this.notificationService.registerNotificationEndpoint(body.browserHashes, body.notificationEndpoint);
     return { success: true };
   }
 

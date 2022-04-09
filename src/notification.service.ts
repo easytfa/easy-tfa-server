@@ -12,6 +12,7 @@ export class NotificationService implements OnModuleDestroy {
   private readonly logger = new Logger(NotificationService.name);
   private readonly firebaseApp: firebase.app.App;
   private readonly notificationEndpointByHash = new Map<string, { notificationEndpoint: string; createdAt: number }>();
+  private readonly hashesByNotificationEndpoint = new Map<string, string[]>();
   private notificationEndpointListChanged = false;
 
   constructor() {
@@ -20,7 +21,7 @@ export class NotificationService implements OnModuleDestroy {
       return;
     }
 
-    this.logger.log(`Initializing notifications for project '${NOTIFICATION_PROJECT_ID}', loading file ./easytfa-firebase-adminsdk.json ...`);
+    this.logger.log(`Initializing notifications for project '${NOTIFICATION_PROJECT_ID}', loading file ./easytfa-firebase-adminsdk.json...`);
     this.firebaseApp = firebase.initializeApp({
       credential: firebase.credential.cert('./easytfa-firebase-adminsdk.json'),
       projectId: NOTIFICATION_PROJECT_ID,
@@ -29,7 +30,8 @@ export class NotificationService implements OnModuleDestroy {
     try {
       const data = fs.readFileSync('./data/notification-endpoints.json');
       this.notificationEndpointByHash = new Map(JSON.parse(data.toString()));
-      this.logger.log(`Loaded ${this.notificationEndpointByHash.size} registered notification endpoints`);
+      this.createHashesByNotificationEndpointMap();
+      this.logger.log(`Loaded ${this.notificationEndpointByHash.size} registered notification endpoints from ./data/notification-endpoints.json`);
     } catch(err) {
       this.logger.log('No existing notification endpoints found in ./data/notification-endpoints.json');
       // Create data directory if it doesn't exist yet
@@ -44,15 +46,34 @@ export class NotificationService implements OnModuleDestroy {
     setInterval(this.writeNotificationEndpointsToDisk.bind(this), 60000);
   }
 
-  public async onModuleDestroy(): Promise<void> {
-    if(!NOTIFICATIONS_ENABLED) return;
-    await this.writeNotificationEndpointsToDisk();
+  private createHashesByNotificationEndpointMap() {
+    for(const entry of this.notificationEndpointByHash.entries()) {
+      const notificationEndpoint = entry[1].notificationEndpoint;
+      let hashes = this.hashesByNotificationEndpoint.get(notificationEndpoint);
+      if(hashes == null) {
+        hashes = [];
+        this.hashesByNotificationEndpoint.set(notificationEndpoint, hashes);
+      }
+      hashes.push(entry[0]);
+    }
   }
 
-  public registerNotificationEndpoint(browserHash: string, notificationEndpoint: string): void {
+  public registerNotificationEndpoint(browserHashes: string[], notificationEndpoint: string): void {
     if(!NOTIFICATIONS_ENABLED) return;
     const createdAt = Math.floor(new Date().getTime() / 1000);
-    this.notificationEndpointByHash.set(browserHash, { notificationEndpoint, createdAt });
+
+    // Delete outdated hashes
+    const currentHashes = this.hashesByNotificationEndpoint.get(notificationEndpoint) ?? [];
+    const hashesToDelete = currentHashes.filter(hash => !browserHashes.includes(hash));
+    for(const hashToDelete of hashesToDelete) {
+      this.notificationEndpointByHash.delete(hashToDelete);
+    }
+
+    // Register new hashes
+    for(const hash of browserHashes) {
+      this.notificationEndpointByHash.set(hash, { notificationEndpoint, createdAt });
+    }
+    this.hashesByNotificationEndpoint.set(notificationEndpoint, browserHashes);
     this.notificationEndpointListChanged = true;
   }
 
@@ -98,5 +119,10 @@ export class NotificationService implements OnModuleDestroy {
     } catch(err) {
       console.error('Sending notification failed', err);
     }
+  }
+
+  public async onModuleDestroy(): Promise<void> {
+    if(!NOTIFICATIONS_ENABLED) return;
+    await this.writeNotificationEndpointsToDisk();
   }
 }
