@@ -1,6 +1,6 @@
 {
   "name": "easy-tfa-server",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
@@ -34,6 +34,7 @@
     "@types/config": "^0.0.41",
     "@types/node": "^16.0.0",
     "@types/uuid": "^8.3.4",
+    "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
