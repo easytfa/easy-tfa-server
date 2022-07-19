@@ -1,4 +1,4 @@
-FROM node:16-alpine@sha256:28bed508446db2ee028d08e76fb47b935defa26a84986ca050d2596ea67fd506 AS build
+FROM node:18-alpine@sha256:b3ca07adf425d043e180464aac97cb4f7a566651f77f4ecb87b10c10788644bb AS build
 COPY ["package.json", "package-lock.json", "./"]
 RUN npm ci
 COPY ["tsconfig.json", "tsconfig.build.json", "./"]
@@ -6,7 +6,7 @@ COPY src ./src
 RUN npm run build
 RUN rm dist/tsconfig.build.tsbuildinfo
 
-FROM node:16-alpine@sha256:28bed508446db2ee028d08e76fb47b935defa26a84986ca050d2596ea67fd506
+FROM node:18-alpine@sha256:b3ca07adf425d043e180464aac97cb4f7a566651f77f4ecb87b10c10788644bb
 RUN apk add dumb-init
 USER node
 ENV NODE_ENV=production
@@ -16,7 +16,7 @@ VOLUME /app/data
 EXPOSE 80
 
 COPY --chown=node:node ["package.json", "package-lock.json", "./"]
-RUN npm ci --production
+RUN npm ci --omit=dev
 COPY --chown=node:node config ./config
 COPY --chown=node:node --from=build dist .
 CMD ["dumb-init", "node", "main.js"]
