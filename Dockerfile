@@ -1,4 +1,4 @@
-FROM node:18-alpine@sha256:828424b660b8274e7dcf6c7447f014406610facf663f38df92c3162a3d29a1db AS build
+FROM node:18-alpine@sha256:1f09c210a17508d34277971b19541a47a26dc5a641dedc03bd28cff095052996 AS build
 COPY ["package.json", "package-lock.json", "./"]
 RUN npm ci
 COPY ["tsconfig.json", "tsconfig.build.json", "./"]
@@ -6,7 +6,7 @@ COPY src ./src
 RUN npm run build
 RUN rm dist/tsconfig.build.tsbuildinfo
 
-FROM node:18-alpine@sha256:828424b660b8274e7dcf6c7447f014406610facf663f38df92c3162a3d29a1db
+FROM node:18-alpine@sha256:1f09c210a17508d34277971b19541a47a26dc5a641dedc03bd28cff095052996
 RUN apk add dumb-init
 USER node
 ENV NODE_ENV=production
