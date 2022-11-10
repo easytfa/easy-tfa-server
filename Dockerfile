@@ -1,4 +1,5 @@
-FROM node:18-alpine@sha256:1f09c210a17508d34277971b19541a47a26dc5a641dedc03bd28cff095052996 AS build
+FROM node:18.12.1-bullseye-slim AS build
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
 COPY ["package.json", "package-lock.json", "./"]
 RUN npm ci
 COPY ["tsconfig.json", "tsconfig.build.json", "./"]
@@ -6,8 +7,8 @@ COPY src ./src
 RUN npm run build
 RUN rm dist/tsconfig.build.tsbuildinfo
 
-FROM node:18-alpine@sha256:1f09c210a17508d34277971b19541a47a26dc5a641dedc03bd28cff095052996
-RUN apk add dumb-init
+FROM node:18.12.1-bullseye-slim
+COPY --from=build /usr/bin/dumb-init /usr/bin/dumb-init
 USER node
 ENV NODE_ENV=production
 WORKDIR /app
