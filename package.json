@@ -1,6 +1,6 @@
 {
   "name": "easy-tfa-server",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
@@ -17,7 +17,7 @@
     "tools:envdefinition": "node ./tools/generate-env-definition.js ./config/default.json ./config/custom-environment-variables.json"
   },
   "overrides": {
-    "fastify@4.7.0": "^4.7.0"
+    "webpack@5.75.0": "^5.75.0"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.4",
