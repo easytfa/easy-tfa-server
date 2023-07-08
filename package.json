@@ -1,6 +1,6 @@
 {
   "name": "easy-tfa-server",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
@@ -15,6 +15,9 @@
     "start:prod:docker": "node main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "tools:envdefinition": "node ./tools/generate-env-definition.js ./config/default.json ./config/custom-environment-variables.json"
+  },
+  "overrides": {
+    "protobufjs@7.2.3": "^7.2.4"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.4",
