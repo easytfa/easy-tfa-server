@@ -1,4 +1,4 @@
-FROM node:18.18.1-bookworm-slim AS build
+FROM node:18.18.2-bookworm-slim AS build
 RUN apt-get update && apt-get install -y --no-install-recommends dumb-init
 COPY ["package.json", "package-lock.json", "./"]
 RUN npm ci
@@ -7,7 +7,7 @@ COPY src ./src
 RUN npm run build
 RUN rm dist/tsconfig.build.tsbuildinfo
 
-FROM node:18.18.1-bookworm-slim
+FROM node:18.18.2-bookworm-slim
 COPY --from=build /usr/bin/dumb-init /usr/bin/dumb-init
 USER node
 ENV NODE_ENV=production
