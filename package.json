@@ -1,6 +1,6 @@
 {
   "name": "easy-tfa-server",
-  "version": "0.7.10",
+  "version": "0.7.14",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
@@ -20,31 +20,31 @@
     "protobufjs@7.2.3": "^7.2.4"
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.4",
-    "@nestjs/core": "^9.0.4",
-    "@nestjs/platform-fastify": "^9.0.4",
-    "@nestjs/platform-ws": "^9.0.4",
-    "@nestjs/websockets": "^9.0.4",
+    "@nestjs/common": "^10.3.10",
+    "@nestjs/core": "^10.3.10",
+    "@nestjs/platform-fastify": "^10.3.10",
+    "@nestjs/platform-ws": "^10.3.10",
+    "@nestjs/websockets": "^10.3.10",
     "config": "^3.3.7",
     "firebase-admin": "^12.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
+    "@nestjs/cli": "^10.4.2",
     "@types/config": "^3.3.0",
     "@types/node": "^18.0.6",
-    "@types/uuid": "^8.3.4",
+    "@types/uuid": "^9.0.8",
     "@types/ws": "^8.5.3",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
-    "@typescript-eslint/parser": "^5.30.7",
-    "eslint": "^8.20.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "eslint": "^8.57.0",
     "rimraf": "^4.0.0",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.0.0",
-    "typescript": "^4.7.4"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.3"
   }
 }
